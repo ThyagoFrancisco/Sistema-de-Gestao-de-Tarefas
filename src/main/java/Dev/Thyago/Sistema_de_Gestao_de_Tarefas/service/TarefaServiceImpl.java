@@ -31,7 +31,7 @@ public class TarefaServiceImpl implements TarefaService{
     @Transactional(readOnly = true)
     public TarefaResponseDTO findById(Long id) {
         Tarefa tarefa = tarefaRepository.findById(id)
-                .orElse(() -> new TarefaNotFoundException("Tarefa não encontrada com id:" +id ));
+                .orElseThrow(() -> new TarefaNotFoundException("Tarefa não encontrada com id:" +id ));
         return TarefaResponseDTO.fromEntity(tarefa);
     }
 
@@ -48,11 +48,9 @@ public class TarefaServiceImpl implements TarefaService{
 
     @Override
     public TarefaResponseDTO update(Long id, TarefaRequestDTO dto) {
-        // Busca a entidade gerenciada pelo JPA (dentro da transação)
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new TarefaNotFoundException("Tarefa não encontrada com id: " +id));
 
-        // Atualiza os campos (o save() fará UPDATE pois a entidade já tem ID)
         tarefa.setTitle(dto.getTitle());
         tarefa.setDescription(dto.getDescription());
         tarefa.setCompleted(dto.getCompleted());
@@ -66,7 +64,6 @@ public class TarefaServiceImpl implements TarefaService{
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new TarefaNotFoundException("Tarefa não encontrada com id: " +id));
 
-        // Inverte o estado: true → false, false → true
         tarefa.setCompleted(!tarefa.getCompleted());
         return TarefaResponseDTO.fromEntity(tarefaRepository.save(tarefa));
     }
@@ -81,8 +78,17 @@ public class TarefaServiceImpl implements TarefaService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<TarefaRequestDTO> findByCompleted(Boolean completed) {
+    public List<TarefaResponseDTO> findByCompleted(Boolean completed) {
         return tarefaRepository.findByCompleted(completed)
+                .stream()
+                .map(TarefaResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<TarefaResponseDTO> findByPriority(Tarefa.Priority priority) {
+        return tarefaRepository.findByPriority(priority)
                 .stream()
                 .map(TarefaResponseDTO::fromEntity)
                 .collect(Collectors.toList());
