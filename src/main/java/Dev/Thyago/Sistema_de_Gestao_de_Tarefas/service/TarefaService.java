@@ -11,13 +11,15 @@ public interface TarefaService {
 
     List<TarefaResponseDTO> findAll();
 
-    TarefaResponseDTO create(TarefaResponseDTO dto);
+    TarefaResponseDTO findById(Long id);
+
+    TarefaResponseDTO create(TarefaRequestDTO dto);
 
     TarefaResponseDTO update(Long id, TarefaRequestDTO dto);
 
 
     // PATCH semântico: apenas inverte o campo "completed"
-    TarefaResponseDTO toggleComplete(long id);
+    TarefaResponseDTO toggleComplete(Long id);
 
     void delete(Long id);
 
