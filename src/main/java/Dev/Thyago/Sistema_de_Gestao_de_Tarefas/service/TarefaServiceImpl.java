@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TarefaServiceImpl implements TarefaService{
 
-    private TarefaRepository tarefaRepository;
+    private final TarefaRepository tarefaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -36,7 +36,7 @@ public class TarefaServiceImpl implements TarefaService{
     }
 
     @Override
-    public TarefaResponseDTO create(TarefaResponseDTO dto) {
+    public TarefaResponseDTO create(TarefaRequestDTO dto) {
         Tarefa tarefa = Tarefa.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
@@ -86,7 +86,7 @@ public class TarefaServiceImpl implements TarefaService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TarefaResponseDTO> findByPriority(Tarefa.Priority priority) {
         return tarefaRepository.findByPriority(priority)
                 .stream()
