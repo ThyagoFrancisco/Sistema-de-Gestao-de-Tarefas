@@ -19,7 +19,7 @@ public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
     List<Tarefa> findByTitleContainingIgnoreCase(String title);
 
     // Consulta JPQL manual para ordenar tarefas pendentes por prioridade
-    @Query("SELECT t FROM Task t WHERE t.completed = false ORDER BY t.priority DESC, t.createdAt ASC")
+    @Query("SELECT t FROM Tarefa t WHERE t.completed = false ORDER BY t.priority DESC, t.createdAt ASC")
     List<Tarefa> findPendingTasksSorted();
 
     long countByCompleted(Boolean completed);
